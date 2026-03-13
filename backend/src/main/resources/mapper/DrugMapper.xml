@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medihome.mapper.DrugMapper">
+    
+    <resultMap id="BaseResultMap" type="com.medihome.entity.Drug">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="name" property="name"/>
+        <result column="specification" property="specification"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="produce_date" property="produceDate"/>
+        <result column="expiry_date" property="expiryDate"/>
+        <result column="usage_dosage" property="usageDosage"/>
+        <result column="indication" property="indication"/>
+        <result column="contraindication" property="contraindication"/>
+        <result column="storage_condition" property="storageCondition"/>
+        <result column="purchase_date" property="purchaseDate"/>
+        <result column="stock_quantity" property="stockQuantity"/>
+        <result column="stock_unit" property="stockUnit"/>
+        <result column="location" property="location"/>
+        <result column="images" property="images"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="is_favorite" property="isFavorite"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="category_name" property="categoryName"/>
+    </resultMap>
+    
+    <select id="selectDrugPage" resultMap="BaseResultMap">
+        SELECT d.*, c.name as category_name
+        FROM drug d
+        LEFT JOIN drug_category c ON d.category_id = c.id
+        WHERE d.user_id = #{userId}
+        <if test="keyword != null and keyword != ''">
+            AND (d.name LIKE CONCAT('%', #{keyword}, '%') OR d.manufacturer LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="categoryId != null">
+            AND d.category_id = #{categoryId}
+        </if>
+        <if test="status != null">
+            AND d.status = #{status}
+        </if>
+        <if test="location != null and location != ''">
+            AND d.location = #{location}
+        </if>
+        <if test="isFavorite != null">
+            AND d.is_favorite = #{isFavorite}
+        </if>
+        ORDER BY d.create_time DESC
+    </select>
+    
+</mapper>

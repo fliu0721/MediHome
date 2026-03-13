@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medihome.mapper.DrugStockLogMapper">
+    
+    <resultMap id="BaseResultMap" type="com.medihome.entity.DrugStockLog">
+        <id column="id" property="id"/>
+        <result column="drug_id" property="drugId"/>
+        <result column="change_type" property="changeType"/>
+        <result column="change_quantity" property="changeQuantity"/>
+        <result column="before_quantity" property="beforeQuantity"/>
+        <result column="after_quantity" property="afterQuantity"/>
+        <result column="reason" property="reason"/>
+        <result column="operator_id" property="operatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="drug_name" property="drugName"/>
+        <result column="operator_name" property="operatorName"/>
+    </resultMap>
+    
+    <select id="selectLogPage" resultMap="BaseResultMap">
+        SELECT l.*, d.name as drug_name, u.nickname as operator_name
+        FROM drug_stock_log l
+        LEFT JOIN drug d ON l.drug_id = d.id
+        LEFT JOIN sys_user u ON l.operator_id = u.id
+        WHERE l.drug_id = #{drugId}
+        ORDER BY l.create_time DESC
+    </select>
+    
+</mapper>

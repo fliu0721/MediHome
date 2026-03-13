@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.medihome.mapper.MedicationRecordMapper">
+    
+    <resultMap id="BaseResultMap" type="com.medihome.entity.MedicationRecord">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="member_id" property="memberId"/>
+        <result column="drug_id" property="drugId"/>
+        <result column="dosage" property="dosage"/>
+        <result column="medication_time" property="medicationTime"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="member_name" property="memberName"/>
+        <result column="drug_name" property="drugName"/>
+        <result column="drug_specification" property="drugSpecification"/>
+    </resultMap>
+    
+    <select id="selectRecordPage" resultMap="BaseResultMap">
+        SELECT r.*, m.name as member_name, d.name as drug_name, d.specification as drug_specification
+        FROM medication_record r
+        LEFT JOIN family_member m ON r.member_id = m.id
+        LEFT JOIN drug d ON r.drug_id = d.id
+        WHERE r.user_id = #{userId}
+        <if test="memberId != null">
+            AND r.member_id = #{memberId}
+        </if>
+        <if test="drugId != null">
+            AND r.drug_id = #{drugId}
+        </if>
+        <if test="startDate != null">
+            AND r.medication_time >= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND r.medication_time &lt;= #{endDate}
+        </if>
+        ORDER BY r.medication_time DESC
+    </select>
+    
+</mapper>
